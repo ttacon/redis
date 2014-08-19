@@ -99,6 +99,7 @@ func (c *Client) TTL(key string) (int, error) {
 // TODO(ttacon): add type enum and change return types
 func (c *Client) Type(key string) (string, error) {
 	// TODO(ttacon): ✔
+
 	return "", nil
 }
 
