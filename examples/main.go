@@ -27,18 +27,23 @@ func main() {
 		return
 	}
 
-	if *cmd == "type" {
+	switch *cmd {
+	case "type":
 		resp, err := c.Type(*keyName)
 		fmt.Println("err: ", err)
 		fmt.Println("resp: ", resp)
-	} else if *cmd == "smembers" {
+	case "smembers":
 		resp, err := c.SMembers(*keyName)
 		fmt.Println("err: ", err)
 		pretty.Print(resp)
 		fmt.Println()
-	} else if *cmd == "select" {
+	case "select":
 		ok, err := c.Select(1)
 		fmt.Println("err: ", err)
 		fmt.Println("ok: ", ok)
+	case "quit":
+		ok, err := c.Quit()
+		fmt.Println("ok: ", ok)
+		fmt.Println("err: ", err)
 	}
 }

@@ -17,9 +17,14 @@ func (c *Client) Ping() (string, error) {
 	return "", nil
 }
 
-func (c *Client) Quit() error {
+func (c *Client) Quit() (bool, error) {
 	// TODO(ttacon): do it
-	return nil
+	resp, err := c.exec("QUIT")
+	if err != nil {
+		return false, err
+	}
+
+	return c.boolResp(resp)
 }
 
 func (c *Client) Select(database int) (bool, error) {
