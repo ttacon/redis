@@ -14,7 +14,12 @@ func (c *Client) Echo(message string) (string, error) {
 
 func (c *Client) Ping() (string, error) {
 	// TODO(ttacon): do it
-	return "", nil
+	resp, err := c.exec("PING")
+	if err != nil {
+		return "", err
+	}
+
+	return c.stringResp(resp)
 }
 
 func (c *Client) Quit() (bool, error) {

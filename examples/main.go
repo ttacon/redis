@@ -45,5 +45,9 @@ func main() {
 		ok, err := c.Quit()
 		fmt.Println("ok: ", ok)
 		fmt.Println("err: ", err)
+	case "ping":
+		pong, err := c.Ping()
+		fmt.Println("pong: ", pong)
+		fmt.Println("err: ", err)
 	}
 }
