@@ -66,6 +66,24 @@ func (c *Client) stringResp(data []byte) (string, error) {
 	return string(data[1:]), nil
 }
 
+func (c *Client) boolResp(data []byte) (bool, error) {
+	if len(data) == 0 {
+		return false, fmt.Errorf(
+			"invalid response data, cannot read OK/bool, data was: %v", data)
+	}
+
+	if data[0] == errByte {
+		return false, fmt.Errorf(string(data[1:]))
+	}
+
+	if data[0] != okByte {
+		return false, fmt.Errorf(
+			"invalid response data, cannot read OK/bool, data was: %v", data)
+	}
+
+	return string(data[1:]) == "OK", nil
+}
+
 func (c *Client) stringSlice(data []byte) ([]string, error) {
 	if len(data) == 0 || data[0] != countByte {
 		return nil, fmt.Errorf(

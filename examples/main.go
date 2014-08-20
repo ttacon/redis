@@ -36,5 +36,9 @@ func main() {
 		fmt.Println("err: ", err)
 		pretty.Print(resp)
 		fmt.Println()
+	} else if *cmd == "select" {
+		ok, err := c.Select(1)
+		fmt.Println("err: ", err)
+		fmt.Println("ok: ", ok)
 	}
 }
