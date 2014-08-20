@@ -8,27 +8,26 @@ func (c *Client) Auth(password string) error {
 }
 
 func (c *Client) Echo(message string) (string, error) {
-	// TODO(ttacon): do it
-	return "", nil
+	resp, err := c.exec("ECHO", message)
+	if err != nil {
+		return "", err
+	}
+	return c.bulkString(resp)
 }
 
 func (c *Client) Ping() (string, error) {
-	// TODO(ttacon): do it
 	resp, err := c.exec("PING")
 	if err != nil {
 		return "", err
 	}
-
 	return c.stringResp(resp)
 }
 
 func (c *Client) Quit() (bool, error) {
-	// TODO(ttacon): do it
 	resp, err := c.exec("QUIT")
 	if err != nil {
 		return false, err
 	}
-
 	return c.boolResp(resp)
 }
 

@@ -49,5 +49,9 @@ func main() {
 		pong, err := c.Ping()
 		fmt.Println("pong: ", pong)
 		fmt.Println("err: ", err)
+	case "echo":
+		echo, err := c.Echo("a cool message")
+		fmt.Println("echo: ", echo)
+		fmt.Println("err: ", err)
 	}
 }
