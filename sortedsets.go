@@ -15,7 +15,7 @@ func (c *Client) ZCount(key, min, max string) (int, error) {
 	return 0, nil
 }
 
-func (c *Client) ZCard(key, increment, member string) (string, error) {
+func (c *Client) ZIncryBy(key, increment, member string) (string, error) {
 	// TODO(ttacon): do it
 	return "", nil
 }

@@ -37,7 +37,13 @@ func (c *Client) SIsMember(key, member string) (bool, error) {
 
 func (c *Client) SMembers(key string) ([]string, error) {
 	// TODO(ttacon): do it
-	return nil, nil
+	resp, err := c.exec("SMEMBERS", key)
+	if err != nil {
+		return nil, err
+	}
+
+	strSliResp, err := c.stringSlice(resp)
+	return strSliResp, err
 }
 
 func (c *Client) SMove(source, destination, member string) (bool, error) {

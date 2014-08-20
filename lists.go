@@ -12,7 +12,7 @@ func (c *Client) BRPop(key string, timeout int, keys ...string) (string, error) 
 
 func (c *Client) BRPopLPush(source, destination string, timeout int) error {
 	// TODO(ttacon): ✔
-	return "", nil
+	return nil
 }
 
 func (c *Client) LIndex(key string, index int) (string, error) {

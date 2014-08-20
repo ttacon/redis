@@ -10,7 +10,7 @@ import (
 
 type Client struct {
 	conn   net.Conn
-	reader bufio.Reader
+	reader *bufio.Reader
 }
 
 func NewClient(address string) (*Client, error) {
@@ -24,7 +24,7 @@ func NewClient(address string) (*Client, error) {
 	return &Client{
 		conn:   conn,
 		reader: bufio.NewReaderSize(conn, 4096),
-	}
+	}, nil
 }
 
 // currently this is synchronous
@@ -36,13 +36,82 @@ func (c *Client) exec(command string, args ...string) ([]byte, error) {
 		return nil, err
 	}
 
-	buf, err := c.reader.ReadBytes(crlfBytes)
+	return c.readTillCRLF()
+}
+
+func (c *Client) readTillCRLF() ([]byte, error) {
+	buf, err := c.reader.ReadBytes(crByte)
+	if err != nil {
+		return nil, err
+	}
+	lf, err := c.reader.ReadByte()
+	if err != nil {
+		return nil, err
+	}
+	if lf != lfByte {
+		return nil, fmt.Errorf("expected end of wire format delimeter, got %v", lf)
+	}
+
+	buf = buf[0 : len(buf)-1]
+	return buf, nil
+}
+
+func (c *Client) stringResp(data []byte) (string, error) {
+	if len(data) == 0 || data[0] != okByte {
+		return "", fmt.Errorf(
+			"invalid response data, cannot read string, data was: %v", data)
+	}
+
+	return string(data[1:]), nil
+}
+
+func (c *Client) stringSlice(data []byte) ([]string, error) {
+	if len(data) == 0 || data[0] != countByte {
+		return nil, fmt.Errorf(
+			"invalid response data, cannot read string slice, data was: %v", data)
+	}
+
+	n, err := strconv.ParseInt(string(data[1:]), 10, 64)
 	if err != nil {
 		return nil, err
 	}
 
-	fmt.Printf("resp: %q\n", string(buf))
-	return buf, nil
+	var (
+		res []string
+		i   int64 = 0
+	)
+	for ; i < n; i++ {
+		next, err := c.readTillCRLF()
+		if err != nil {
+			// TODO(ttacon): do we need to clean the wire/conn up?
+			return nil, err
+		}
+
+		// sanity check
+		if len(next) < 2 {
+			return nil, fmt.Errorf("invalid amount of data to read: %v", string(next))
+		}
+		// TODO(ttacon): use encoding/binary?
+		ln, err := strconv.ParseInt(string(next[1:]), 10, 64)
+		if err != nil {
+			return nil, err
+		}
+
+		val, err := c.readTillCRLF()
+		if err != nil {
+			return nil, err
+		}
+		if int64(len(val)) != ln {
+			return nil, fmt.Errorf(
+				"read invalid amount of data off wire, expected %d bytes got %v",
+				ln,
+				val)
+		}
+
+		res = append(res, string(val))
+
+	}
+	return res, nil
 }
 
 // ----------------------------------------------------------------------------
@@ -60,7 +129,9 @@ const (
 	sizeByte       = byte('$')
 	numByte        = byte(':')
 	trueByte       = byte('1')
+)
 
+var (
 	crlfBytes = []byte{crByte, lfByte}
 )
 
@@ -82,7 +153,7 @@ func bytesForCommand(command string, args []string) []byte {
 		buffer.WriteByte(sizeByte)
 		buffer.Write([]byte(strconv.Itoa(len(s))))
 		buffer.Write(crlfBytes)
-		buffer.Write(s)
+		buffer.Write([]byte(s))
 		buffer.Write(crlfBytes)
 	}
 

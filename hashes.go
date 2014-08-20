@@ -25,7 +25,7 @@ func (c *Client) Hincrby(key, field string, increment int) error {
 	return nil
 }
 
-func (c *Client) Hincrbyfloat(key, field string, increment float) error {
+func (c *Client) Hincrbyfloat(key, field string, increment float64) error {
 	// TODO(ttacon): ✔
 	return nil
 }

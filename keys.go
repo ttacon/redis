@@ -6,11 +6,6 @@ func (c *Client) Del(key string, otherKeys ...string) error {
 	return nil
 }
 
-func (c *Client) Dump(key string) (string, error) {
-	// TODO(ttacon): ✔
-	return "", nil
-}
-
 func (c *Client) Dump(key string) (bool, error) {
 	// TODO(ttacon): ✔
 	return false, nil
@@ -100,7 +95,11 @@ func (c *Client) TTL(key string) (int, error) {
 func (c *Client) Type(key string) (string, error) {
 	// TODO(ttacon): ✔
 	resp, err := c.exec("TYPE", key)
-	return string(resp), err
+	if err != nil {
+		return "", err
+	}
+	strResp, err := c.stringResp(resp)
+	return strResp, err
 }
 
 // TODO(ttacon): add correct function signature

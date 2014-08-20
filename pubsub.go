@@ -14,7 +14,7 @@ func (c *Client) Publish(channel, message string) (int, error) {
 // TODO(ttacon): double check return type
 func (c *Client) PUnsubscribe(patterns ...string) ([]string, error) {
 	// TODO(ttacon): do it
-	return "", nil
+	return nil, nil
 }
 
 // TODO(ttacon): double check return type, same issue as PSubscribe
