@@ -39,6 +39,7 @@ func (c *Client) exec(command string, args ...string) ([]byte, error) {
 	return c.readTillCRLF()
 }
 
+// TODO(ttacon): change this to use bufio.Scanner/SplitFunc
 func (c *Client) readTillCRLF() ([]byte, error) {
 	buf, err := c.reader.ReadBytes(crByte)
 	if err != nil {
