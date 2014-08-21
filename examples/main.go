@@ -11,6 +11,7 @@ import (
 var (
 	keyName = flag.String("k", "", "the key you want to see the type of")
 	cmd     = flag.String("c", "", "the command to call")
+	port    = flag.String("p", "6379", "the port to connect to redis on")
 )
 
 func main() {
@@ -21,7 +22,7 @@ func main() {
 		return
 	}
 
-	c, err := redis.NewClient(":6379")
+	c, err := redis.NewClient(fmt.Sprintf(":%s", *port))
 	if err != nil {
 		fmt.Println("err: ", err)
 		return
@@ -53,5 +54,9 @@ func main() {
 		echo, err := c.Echo("a cool message")
 		fmt.Println("echo: ", echo)
 		fmt.Println("err: ", err)
+	case "auth":
+		ok, err := c.Auth("bananaschipsandpoop")
+		fmt.Println("err: ", err)
+		fmt.Println("ok: ", ok)
 	}
 }

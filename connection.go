@@ -2,9 +2,14 @@ package redis
 
 import "fmt"
 
-func (c *Client) Auth(password string) error {
+func (c *Client) Auth(password string) (bool, error) {
 	// TODO(ttacon): do it
-	return nil
+	resp, err := c.exec("AUTH", password)
+	if err != nil {
+		return false, err
+	}
+
+	return c.boolResp(resp)
 }
 
 func (c *Client) Echo(message string) (string, error) {
