@@ -35,11 +35,9 @@ func (c *Client) Quit() (bool, error) {
 }
 
 func (c *Client) Select(database int) (bool, error) {
-	// TODO(ttacon): do it
 	resp, err := c.exec("SELECT", fmt.Sprintf("%d", database))
 	if err != nil {
 		return false, err
 	}
-
 	return c.boolResp(resp)
 }
