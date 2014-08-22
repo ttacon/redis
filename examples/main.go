@@ -66,5 +66,13 @@ func main() {
 		key, err := c.RandomKey()
 		fmt.Println("err: ", err)
 		fmt.Println("key: ", key)
+	case "sadd":
+		numAdded, err := c.SAdd(*keyName, "yolo")
+		fmt.Println("numAdded: ", numAdded)
+		fmt.Println("err: ", err)
+	case "scard":
+		card, err := c.SCard(*keyName)
+		fmt.Println("err: ", err)
+		fmt.Println("card: ", card)
 	}
 }

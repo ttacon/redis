@@ -1,13 +1,23 @@
 package redis
 
-func (c *Client) SAdd(key, member string, members ...string) (bool, error) {
-	// TODO(ttacon): do it
-	return false, nil
+// TODO(ttacon): make not int64 but int
+func (c *Client) SAdd(key, member string, members ...string) (int64, error) {
+	args := append([]string{key, member}, members...)
+	resp, err := c.exec("SADD", args...)
+	if err != nil {
+		return 0, err
+	}
+	return c.intResp(resp)
 }
 
-func (c *Client) SCard(key string) (int, error) {
+// TODO(ttacon): make not int64 but int
+func (c *Client) SCard(key string) (int64, error) {
 	// TODO(ttacon): do it
-	return 0, nil
+	resp, err := c.exec("SCARD", key)
+	if err != nil {
+		return 0, err
+	}
+	return c.intResp(resp)
 }
 
 func (c *Client) SDiff(key string, keys ...string) ([]string, error) {

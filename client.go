@@ -117,6 +117,10 @@ func (c *Client) intResp(data []byte) (int64, error) {
 		return 0, fmt.Errorf("invalid data slice, none exists")
 	}
 
+	if data[0] == errByte {
+		return 0, fmt.Errorf(string(data[1:]))
+	}
+
 	if data[0] != numByte {
 		return 0, fmt.Errorf("expected ':', got %v", string(data[0]))
 	}
