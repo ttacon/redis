@@ -129,7 +129,16 @@ func (c *Client) intResp(data []byte) (int64, error) {
 }
 
 func (c *Client) stringSlice(data []byte) ([]string, error) {
-	if len(data) == 0 || data[0] != countByte {
+	if len(data) == 0 {
+		return nil, fmt.Errorf(
+			"invalid response data, cannot read string slice, data was: %v", data)
+	}
+
+	if data[0] == errByte {
+		return nil, fmt.Errorf(string(data[1:]))
+	}
+
+	if data[0] != countByte {
 		return nil, fmt.Errorf(
 			"invalid response data, cannot read string slice, data was: %v", data)
 	}

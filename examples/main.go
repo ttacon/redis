@@ -74,5 +74,9 @@ func main() {
 		card, err := c.SCard(*keyName)
 		fmt.Println("err: ", err)
 		fmt.Println("card: ", card)
+	case "sdiff":
+		dif, err := c.SDiff(*keyName)
+		fmt.Println("err: ", err)
+		fmt.Println("dif: ", dif)
 	}
 }

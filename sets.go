@@ -1,7 +1,7 @@
 package redis
 
-// TODO(ttacon): make not int64 but int
 func (c *Client) SAdd(key, member string, members ...string) (int64, error) {
+	// TODO(ttacon): make not int64 but int
 	args := append([]string{key, member}, members...)
 	resp, err := c.exec("SADD", args...)
 	if err != nil {
@@ -20,8 +20,11 @@ func (c *Client) SCard(key string) (int64, error) {
 }
 
 func (c *Client) SDiff(key string, keys ...string) ([]string, error) {
-	// TODO(ttacon): do it
-	return nil, nil
+	resp, err := c.exec("SDIFF", append([]string{key}, keys...)...)
+	if err != nil {
+		return nil, err
+	}
+	return c.stringSlice(resp)
 }
 
 func (c *Client) SDiffStore(destination, key string, keys ...string) (int, error) {
