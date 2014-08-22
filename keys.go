@@ -65,8 +65,11 @@ func (c *Client) PTTL(key string) (int64, error) {
 }
 
 func (c *Client) RandomKey() (string, error) {
-	// TODO(ttacon): ✔
-	return "", nil
+	resp, err := c.exec("RANDOMKEY")
+	if err != nil {
+		return "", err
+	}
+	return c.bulkString(resp)
 }
 
 func (c *Client) Rename(key, newkey string) error {
@@ -86,9 +89,7 @@ func (c *Client) Sort(key, newkey string) error {
 	return nil
 }
 
-// TODO(ttacon): int or int64?
 func (c *Client) TTL(key string) (int64, error) {
-	// TODO(ttacon): ✔
 	resp, err := c.exec("TTL", key)
 	if err != nil {
 		return 0, err

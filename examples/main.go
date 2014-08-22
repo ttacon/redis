@@ -62,5 +62,9 @@ func main() {
 		ttl, err := c.TTL(*keyName)
 		fmt.Println("err: ", err)
 		fmt.Println("ttl: ", ttl)
+	case "randomkey":
+		key, err := c.RandomKey()
+		fmt.Println("err: ", err)
+		fmt.Println("key: ", key)
 	}
 }
