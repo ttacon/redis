@@ -12,7 +12,6 @@ func (c *Client) SAdd(key, member string, members ...string) (int64, error) {
 
 // TODO(ttacon): make not int64 but int
 func (c *Client) SCard(key string) (int64, error) {
-	// TODO(ttacon): do it
 	resp, err := c.exec("SCARD", key)
 	if err != nil {
 		return 0, err
