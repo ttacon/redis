@@ -112,6 +112,18 @@ func (c *Client) bulkString(data []byte) (string, error) {
 	return string(respBytes), err
 }
 
+func (c *Client) intResp(data []byte) (int64, error) {
+	if len(data) == 0 {
+		return 0, fmt.Errorf("invalid data slice, none exists")
+	}
+
+	if data[0] != numByte {
+		return 0, fmt.Errorf("expected ':', got %v", string(data[0]))
+	}
+
+	return strconv.ParseInt(string(data[1:]), 10, 64)
+}
+
 func (c *Client) stringSlice(data []byte) ([]string, error) {
 	if len(data) == 0 || data[0] != countByte {
 		return nil, fmt.Errorf(

@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/kr/pretty"
+	"github.com/ttacon/pretty"
 	"github.com/ttacon/redis"
 )
 
@@ -58,5 +58,9 @@ func main() {
 		ok, err := c.Auth("bananaschipsandpoop")
 		fmt.Println("err: ", err)
 		fmt.Println("ok: ", ok)
+	case "ttl":
+		ttl, err := c.TTL(*keyName)
+		fmt.Println("err: ", err)
+		fmt.Println("ttl: ", ttl)
 	}
 }

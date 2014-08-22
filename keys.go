@@ -1,6 +1,7 @@
 package redis
 
 // Key commands http://redis.io/commands#generic
+
 func (c *Client) Del(key string, otherKeys ...string) error {
 	// TODO(ttacon): ✔
 	return nil
@@ -86,20 +87,22 @@ func (c *Client) Sort(key, newkey string) error {
 }
 
 // TODO(ttacon): int or int64?
-func (c *Client) TTL(key string) (int, error) {
+func (c *Client) TTL(key string) (int64, error) {
 	// TODO(ttacon): ✔
-	return 0, nil
+	resp, err := c.exec("TTL", key)
+	if err != nil {
+		return 0, err
+	}
+	return c.intResp(resp)
 }
 
 // TODO(ttacon): add type enum and change return types
 func (c *Client) Type(key string) (string, error) {
-	// TODO(ttacon): ✔
 	resp, err := c.exec("TYPE", key)
 	if err != nil {
 		return "", err
 	}
-	strResp, err := c.stringResp(resp)
-	return strResp, err
+	return c.stringResp(resp)
 }
 
 // TODO(ttacon): add correct function signature
