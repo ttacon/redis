@@ -32,9 +32,13 @@ func (c *Client) SDiffStore(destination, key string, keys ...string) (int, error
 	return 0, nil
 }
 
+// TODO(ttacon): check is correct
 func (c *Client) SInter(key string, keys ...string) ([]string, error) {
-	// TODO(ttacon): do it
-	return nil, nil
+	resp, err := c.exec("SINTER", append([]string{key}, keys...)...)
+	if err != nil {
+		return nil, err
+	}
+	return c.stringSlice(resp)
 }
 
 func (c *Client) SInterStore(destination, key string, keys ...string) (int, error) {
@@ -43,8 +47,11 @@ func (c *Client) SInterStore(destination, key string, keys ...string) (int, erro
 }
 
 func (c *Client) SIsMember(key, member string) (bool, error) {
-	// TODO(ttacon): do it
-	return false, nil
+	resp, err := c.exec("SISMEMBER", key)
+	if err != nil {
+		return false, err
+	}
+	return c.boolResp(resp)
 }
 
 func (c *Client) SMembers(key string) ([]string, error) {
