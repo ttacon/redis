@@ -78,5 +78,9 @@ func main() {
 		dif, err := c.SDiff(*keyName)
 		fmt.Println("err: ", err)
 		fmt.Println("dif: ", dif)
+	case "sismember":
+		isMember, err := c.SIsMember(*keyName, "yolo2")
+		fmt.Println("err: ", err)
+		fmt.Println("isMember: ", isMember)
 	}
 }

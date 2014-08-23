@@ -47,11 +47,14 @@ func (c *Client) SInterStore(destination, key string, keys ...string) (int, erro
 }
 
 func (c *Client) SIsMember(key, member string) (bool, error) {
-	resp, err := c.exec("SISMEMBER", key)
+	resp, err := c.exec("SISMEMBER", key, member)
 	if err != nil {
 		return false, err
 	}
-	return c.boolResp(resp)
+
+	// why is this an int? why not OK?
+	iResp, err := c.intResp(resp)
+	return iResp == 1, err
 }
 
 func (c *Client) SMembers(key string) ([]string, error) {
