@@ -74,7 +74,6 @@ func (c *Client) SMove(source, destination, member string) (bool, error) {
 }
 
 func (c *Client) SPop(key string) (string, error) {
-	// TODO(ttacon): do it
 	resp, err := c.exec("SPOP", key)
 	if err != nil {
 		return nil
