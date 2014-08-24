@@ -9,9 +9,10 @@ import (
 )
 
 var (
-	keyName = flag.String("k", "", "the key you want to see the type of")
-	cmd     = flag.String("c", "", "the command to call")
-	port    = flag.String("p", "6379", "the port to connect to redis on")
+	keyName  = flag.String("k", "", "the key you want to see the type of")
+	keyName2 = flag.String("k2", "", "second key")
+	cmd      = flag.String("c", "", "the command to call")
+	port     = flag.String("p", "6379", "the port to connect to redis on")
 )
 
 func main() {
@@ -82,5 +83,9 @@ func main() {
 		isMember, err := c.SIsMember(*keyName, "yolo2")
 		fmt.Println("err: ", err)
 		fmt.Println("isMember: ", isMember)
+	case "smove":
+		wasMoved, err := c.SMove(*keyName, *keyName2, "yolo")
+		fmt.Println("err: ", err)
+		fmt.Println("wasMoved: ", wasMoved)
 	}
 }

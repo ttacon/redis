@@ -66,13 +66,20 @@ func (c *Client) SMembers(key string) ([]string, error) {
 }
 
 func (c *Client) SMove(source, destination, member string) (bool, error) {
-	// TODO(ttacon): do it
-	return false, nil
+	resp, err := c.exec("SMOVE", source, destination, member)
+	if err != nil {
+		return false, err
+	}
+	return c.boolResp(resp)
 }
 
 func (c *Client) SPop(key string) (string, error) {
 	// TODO(ttacon): do it
-	return "", nil
+	resp, err := c.exec("SPOP", key)
+	if err != nil {
+		return nil
+	}
+	return c.stringResp(resp)
 }
 
 func (c *Client) SRandMember(key string, count int) ([]string, error) {
