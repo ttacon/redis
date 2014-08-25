@@ -6,8 +6,11 @@ func (c *Client) ZAdd(key, score, member string, values ...string) (int, error) 
 }
 
 func (c *Client) ZCard(key string) (int, error) {
-	// TODO(ttacon): do it
-	return 0, nil
+	resp, err := c.exec("ZCARD", key)
+	if err != nil {
+		return 0, err
+	}
+	return c.intResp(resp)
 }
 
 func (c *Client) ZCount(key, min, max string) (int, error) {
