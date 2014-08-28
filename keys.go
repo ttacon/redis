@@ -1,6 +1,9 @@
 package redis
 
+import
+
 // Key commands http://redis.io/commands#generic
+"strconv"
 
 func (c *Client) Del(key string, otherKeys ...string) error {
 	// TODO(ttacon): ✔
@@ -73,14 +76,13 @@ func (c *Client) RandomKey() (string, error) {
 }
 
 func (c *Client) Rename(key, newkey string) error {
-	// TODO(ttacon): ✔
-	return nil
+	_, err := c.exec("RENAME", key, newkey)
+	return err
 }
 
-// TODO(ttacon): add correct function signature
-func (c *Client) Restore(key, newkey string) error {
-	// TODO(ttacon): ✔
-	return nil
+func (c *Client) Restore(key string, ttl int, serialized string) error {
+	_, err := c.exec("RESTORE", key, strconv.Itoa(ttl), serialized)
+	return err
 }
 
 // TODO(ttacon): add correct function signature
