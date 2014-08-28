@@ -5,7 +5,7 @@ func (c *Client) ZAdd(key, score, member string, values ...string) (int, error) 
 	return 0, nil
 }
 
-func (c *Client) ZCard(key string) (int, error) {
+func (c *Client) ZCard(key string) (int64, error) {
 	resp, err := c.exec("ZCARD", key)
 	if err != nil {
 		return 0, err

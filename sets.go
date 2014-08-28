@@ -76,7 +76,7 @@ func (c *Client) SMove(source, destination, member string) (bool, error) {
 func (c *Client) SPop(key string) (string, error) {
 	resp, err := c.exec("SPOP", key)
 	if err != nil {
-		return nil
+		return "", err
 	}
 	return c.stringResp(resp)
 }
