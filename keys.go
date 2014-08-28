@@ -85,10 +85,12 @@ func (c *Client) Restore(key string, ttl int, serialized string) error {
 	return err
 }
 
-// TODO(ttacon): add correct function signature
-func (c *Client) Sort(key, newkey string) error {
-	// TODO(ttacon): ✔
-	return nil
+func (c *Client) Sort(key string, modifiers ...string) ([]string, error) {
+	resp, err := c.exec("SORT", append([]string{key}, modifiers...)...)
+	if err != nil {
+		return nil, err
+	}
+	return c.stringSlice(resp)
 }
 
 func (c *Client) TTL(key string) (int64, error) {
