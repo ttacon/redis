@@ -52,19 +52,30 @@ func (c *Client) Persist(key string) error {
 	return nil
 }
 
-func (c *Client) PExpire(key string, milliseconds int64) error {
-	// TODO(ttacon): ✔
-	return nil
+func (c *Client) PExpire(key string, milliseconds int64) (bool, error) {
+	resp, err := c.exec("PEXPIRE", key, strconv.FormatInt(milliseconds, 10))
+	if err != nil {
+		return false, err
+	}
+	val, err := c.intResp(resp)
+	return val == 1, err
 }
 
-func (c *Client) PExpireAt(key string, timestamp int64) error {
-	// TODO(ttacon): ✔
-	return nil
+func (c *Client) PExpireAt(key string, timestamp int64) (bool, error) {
+	resp, err := c.exec("PEXPIREAT", key, strconv.FormatInt(timestamp, 10))
+	if err != nil {
+		return false, err
+	}
+	v, err := c.intResp(resp)
+	return v == 1, err
 }
 
 func (c *Client) PTTL(key string) (int64, error) {
-	// TODO(ttacon): ✔
-	return 0, nil
+	resp, err := c.exec("PTTL", key)
+	if err != nil {
+		return 0, err
+	}
+	return c.intResp(resp)
 }
 
 func (c *Client) RandomKey() (string, error) {
