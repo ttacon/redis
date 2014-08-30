@@ -26,8 +26,12 @@ func (c *Client) ExpireAt(key string, timestamp int64) error {
 }
 
 func (c *Client) Keys(pattern string) ([]string, error) {
-	// TODO(ttacon): ✔
-	return nil, nil
+	resp, err := c.exec("KEYS", pattern)
+	if err != nil {
+		return nil, err
+	}
+
+	return c.stringSlice(resp)
 }
 
 // TODO(ttacon): add correct function signature
