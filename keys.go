@@ -110,8 +110,19 @@ func (c *Client) Type(key string) (string, error) {
 	return c.stringResp(resp)
 }
 
-// TODO(ttacon): add correct function signature
-func (c *Client) Scan(key, newkey string) error {
-	// TODO(ttacon): ✔
-	return nil
+func (c *Client) Scan(key string, cursor int) ([]string, int, error) {
+	resp, err := c.exec("SCAN", strconv.Itoa(cursor))
+	if err != nil {
+		return nil, 0, err
+	}
+	vals, err := c.stringSlice(resp)
+
+	// the first val in vals (if no error) is the cursor val
+	if err != nil {
+		return nil, 0, err
+	}
+
+	// TODO(ttacon): this should probably be 64, shouldn't it?
+	val, err := strconv.ParseInt(vals[0], 10, 32)
+	return vals[1:], int(val), err
 }

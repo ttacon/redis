@@ -163,24 +163,33 @@ func (c *Client) stringSlice(data []byte) ([]string, error) {
 		if len(next) < 2 {
 			return nil, fmt.Errorf("invalid amount of data to read: %v", string(next))
 		}
+
 		// TODO(ttacon): use encoding/binary?
-		ln, err := strconv.ParseInt(string(next[1:]), 10, 64)
-		if err != nil {
-			return nil, err
-		}
+		if next[0] == sizeByte {
+			ln, err := strconv.ParseInt(string(next[1:]), 10, 64)
+			if err != nil {
+				return nil, err
+			}
 
-		val, err := c.readTillCRLF()
-		if err != nil {
-			return nil, err
-		}
-		if int64(len(val)) != ln {
-			return nil, fmt.Errorf(
-				"read invalid amount of data off wire, expected %d bytes got %v",
-				ln,
-				val)
-		}
+			val, err := c.readTillCRLF()
+			if err != nil {
+				return nil, err
+			}
+			if int64(len(val)) != ln {
+				return nil, fmt.Errorf(
+					"read invalid amount of data off wire, expected %d bytes got %v",
+					ln,
+					val)
+			}
 
-		res = append(res, string(val))
+			res = append(res, string(val))
+		} else if next[0] == countByte {
+			vals, err := c.stringSlice(next)
+			if err != nil {
+				return nil, err
+			}
+			res = append(res, vals...)
+		}
 
 	}
 	return res, nil

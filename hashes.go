@@ -38,7 +38,7 @@ func (c *Client) Hgetall(key string) ([]string, error) {
 func (c *Client) Hincrby(key, field string, increment int) (int64, error) {
 	resp, err := c.exec("HINCRBY", key, field, fmt.Sprintf("%d", increment))
 	if err != nil {
-		return err
+		return 0, err
 	}
 	return c.intResp(resp)
 }

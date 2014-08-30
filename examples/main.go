@@ -87,5 +87,10 @@ func main() {
 		wasMoved, err := c.SMove(*keyName, *keyName2, "yolo")
 		fmt.Println("err: ", err)
 		fmt.Println("wasMoved: ", wasMoved)
+	case "scan":
+		strs, next, err := c.Scan(*keyName, 0)
+		fmt.Println("strs: ", strs)
+		fmt.Println("next: ", next)
+		fmt.Println("err: ", err)
 	}
 }
