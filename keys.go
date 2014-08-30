@@ -47,9 +47,14 @@ func (c *Client) Object(key string) error {
 	return nil
 }
 
-func (c *Client) Persist(key string) error {
-	// TODO(ttacon): ✔
-	return nil
+func (c *Client) Persist(key string) (bool, error) {
+	resp, err := c.exec("PERSIST", key)
+	if err != nil {
+		return false, err
+	}
+
+	val, err := c.intResp(resp)
+	return val == 1, err
 }
 
 func (c *Client) PExpire(key string, milliseconds int64) (bool, error) {
