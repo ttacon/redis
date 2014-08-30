@@ -36,9 +36,14 @@ func (c *Client) Migrate(key string) error {
 	return nil
 }
 
-func (c *Client) Move(key string, db int) error {
-	// TODO(ttacon): ✔
-	return nil
+func (c *Client) Move(key string, db int) (bool, error) {
+	resp, err := c.exec("MOVE", key, strconv.Itoa(db))
+	if err != nil {
+		return false, err
+	}
+
+	val, err := c.intResp(resp)
+	return val == 1, err
 }
 
 // TODO(ttacon): add correct function signature
