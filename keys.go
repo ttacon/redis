@@ -21,7 +21,7 @@ func (c *Client) Expire(key string, seconds int) error {
 }
 
 func (c *Client) ExpireAt(key string, timestamp int64) (bool, error) {
-	resp, err := c.exec("EXPIREAT", key, strconv.FormatInt(timestamp))
+	resp, err := c.exec("EXPIREAT", key, strconv.FormatInt(timestamp, 10))
 	if err != nil {
 		return false, err
 	}
