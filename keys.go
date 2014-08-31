@@ -1,9 +1,8 @@
 package redis
 
-import
+import "strconv"
 
 // Key commands http://redis.io/commands#generic
-"strconv"
 
 func (c *Client) Del(key string, otherKeys ...string) error {
 	// TODO(ttacon): ✔
@@ -15,9 +14,22 @@ func (c *Client) Dump(key string) (bool, error) {
 	return false, nil
 }
 
-func (c *Client) Expire(key string, seconds int) error {
-	// TODO(ttacon): ✔
-	return nil
+func (c *Client) Exists(key string) (bool, error) {
+	resp, err := c.exec("EXISTS", key)
+	if err != nil {
+		return false, err
+	}
+	val, err := c.intResp(resp)
+	return val == 1, err
+}
+
+func (c *Client) Expire(key string, seconds int) (bool, error) {
+	resp, err := c.exec("EXPIRE", key, strconv.Itoa(seconds))
+	if err != nil {
+		return false, err
+	}
+	val, err := c.intResp(resp)
+	return val == 1, err
 }
 
 func (c *Client) ExpireAt(key string, timestamp int64) (bool, error) {
