@@ -9,9 +9,12 @@ func (c *Client) Del(key string, otherKeys ...string) error {
 	return nil
 }
 
-func (c *Client) Dump(key string) (bool, error) {
-	// TODO(ttacon): ✔
-	return false, nil
+func (c *Client) Dump(key string) (string, error) {
+	resp, err := c.exec("DUMP", key)
+	if err != nil {
+		return "", err
+	}
+	return c.stringResp(resp)
 }
 
 func (c *Client) Exists(key string) (bool, error) {
