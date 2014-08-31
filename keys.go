@@ -4,9 +4,13 @@ import "strconv"
 
 // Key commands http://redis.io/commands#generic
 
-func (c *Client) Del(key string, otherKeys ...string) error {
-	// TODO(ttacon): ✔
-	return nil
+func (c *Client) Del(key string, otherKeys ...string) (int, error) {
+	resp, err := c.exec("DEL", append([]string{key}, otherKeys...)...)
+	if err != nil {
+		return -1, err
+	}
+	val, err := c.intResp(resp)
+	return int(val), err
 }
 
 func (c *Client) Dump(key string) (string, error) {
