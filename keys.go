@@ -20,9 +20,13 @@ func (c *Client) Expire(key string, seconds int) error {
 	return nil
 }
 
-func (c *Client) ExpireAt(key string, timestamp int64) error {
-	// TODO(ttacon): ✔
-	return nil
+func (c *Client) ExpireAt(key string, timestamp int64) (bool, error) {
+	resp, err := c.exec("EXPIREAT", key, strconv.FormatInt(timestamp))
+	if err != nil {
+		return false, err
+	}
+	val, err := c.intResp(resp)
+	return val == 1, err
 }
 
 func (c *Client) Keys(pattern string) ([]string, error) {
