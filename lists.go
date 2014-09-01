@@ -32,9 +32,12 @@ func (c *Client) BRPopLPush(source, destination string, timeout int) (*string, e
 	return c.nillableBulkString(resp)
 }
 
-func (c *Client) LIndex(key string, index int) (string, error) {
-	// TODO(ttacon): ✔
-	return "", nil
+func (c *Client) LIndex(key string, index int) (*string, error) {
+	resp, err := c.exec("LINDEX", key, strconv.Itoa(index))
+	if err != nil {
+		return nil, err
+	}
+	return c.nillableBulkString(resp)
 }
 
 type BeforeAfter string
