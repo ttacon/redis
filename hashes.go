@@ -52,7 +52,7 @@ func (c *Client) Hincrbyfloat(key, field string, increment float64) (float64, er
 		"HINCRBYFLOAT",
 		key,
 		field,
-		strconv.FormatFloat(increment, "f", 64))
+		strconv.FormatFloat(increment, "f", -1, 64))
 	if err != nil {
 		return 0, err
 	}
@@ -110,7 +110,7 @@ func (c *Client) Hset(key, field string, value interface{}) (int, error) {
 	if str, ok := value.(string); ok {
 		strVal = str
 	} else if i, ok := value.(int); ok {
-		strVal = strconv.FormatInt(int64(i), 64)
+		strVal = strconv.FormatInt(int64(i), 10)
 	} else {
 		return -1, errors.New(
 			fmt.Sprintf(
@@ -130,7 +130,7 @@ func (c *Client) Hsetnx(key, field string, value interface{}) (int, error) {
 	if str, ok := value.(string); ok {
 		strVal = str
 	} else if i, ok := value.(int); ok {
-		strVal = strconv.FormatInt(int64(i), 64)
+		strVal = strconv.FormatInt(int64(i), 10)
 	} else {
 		return -1, errors.New(
 			fmt.Sprintf(
