@@ -84,6 +84,34 @@ func (c *Client) boolResp(data []byte) (bool, error) {
 	return string(data[1:]) == "OK", nil
 }
 
+func (c *Client) nillableBulkString(data []byte) (*string, error) {
+	if len(data) == 0 {
+		return nil, fmt.Errorf(
+			"invalid response data, cannot read OK/bool, data was: %v", data)
+	}
+
+	if data[0] == errByte {
+		return nil, fmt.Errorf(string(data[1:]))
+	}
+
+	if data[0] != sizeByte {
+		return nil, fmt.Errorf(
+			"invalid response data, cannot read OK/bool, data was: %v", data)
+	}
+
+	ln, err := strconv.ParseInt(string(data[1:]), 10, 64)
+	if err != nil {
+		return nil, err
+	}
+
+	if ln < 0 {
+		return nil, nil
+	}
+
+	respBytes, err := c.readTillCRLF()
+	return &string(respBytes), err
+}
+
 func (c *Client) bulkString(data []byte) (string, error) {
 	if len(data) == 0 {
 		return "", fmt.Errorf(

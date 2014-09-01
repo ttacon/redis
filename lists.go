@@ -17,16 +17,19 @@ func (c *Client) BRPop(key string, timeout int, keys ...string) ([]string, error
 	var vals = []string{key}
 	vals = append(vals, keys...)
 	vals = append(vals, strconv.Itoa(timeout))
-	resp, err := c.exec("BLPOP", vals...)
+	resp, err := c.exec("BRPOP", vals...)
 	if err != nil {
 		return nil, err
 	}
 	return c.stringSlice(resp)
 }
 
-func (c *Client) BRPopLPush(source, destination string, timeout int) error {
-	// TODO(ttacon): ✔
-	return nil
+func (c *Client) BRPopLPush(source, destination string, timeout int) (string, error) {
+	resp, err := c.exec("BRPOPLPUSH", source, destination, strconv.Itoa(timeout))
+	if err != nil {
+		return "", err
+	}
+	return c.stringResp(resp)
 }
 
 func (c *Client) LIndex(key string, index int) (string, error) {
