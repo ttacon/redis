@@ -2,13 +2,13 @@ package redis
 
 import "fmt"
 
-func (c *Client) Hdel(key, field string, fields ...string) error {
-	_, err := c.exec("HDEL", append([]string{key, field}, fields...)...)
+func (c *Client) Hdel(key, field string, fields ...string) (int, error) {
+	resp, err := c.exec("HDEL", append([]string{key, field}, fields...)...)
 	if err != nil {
-		return err
+		return 0, err
 	}
-	// TODO(ttacon): should check resp, pretty sure it returns an int
-	return nil
+	val, err := c.intResp(resp)
+	return int(val), err
 }
 
 func (c *Client) Hexists(key, field string) (bool, error) {
