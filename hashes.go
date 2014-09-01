@@ -153,7 +153,6 @@ func (c *Client) Hvals(key string) ([]string, error) {
 	return c.stringSlice(resp)
 }
 
-// TODO(ttacon): set correct function signature
 func (c *Client) Hscan(key string, cursor int64) (int64, []string, error) {
 	resp, err := c.sxec("HSCAN", key, strconv.FormatInt(cursor, 10))
 	if err != nil {
