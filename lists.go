@@ -79,9 +79,12 @@ func (c *Client) LInsert(
 	return c.intResp(resp)
 }
 
-func (c *Client) LLen(key string) (int, error) {
-	// TODO(ttacon): ✔
-	return 0, nil
+func (c *Client) LLen(key string) (int64, error) {
+	resp, err := c.exec("LLEN", key)
+	if err != nil {
+		return -1, err
+	}
+	return c.intResp(resp)
 }
 
 func (c *Client) LPop(key string) (string, error) {
