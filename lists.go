@@ -87,9 +87,12 @@ func (c *Client) LLen(key string) (int64, error) {
 	return c.intResp(resp)
 }
 
-func (c *Client) LPop(key string) (string, error) {
-	// TODO(ttacon): ✔
-	return "", nil
+func (c *Client) LPop(key string) (*string, error) {
+	resp, err := c.exec("LPOP", key)
+	if err != nil {
+		return nil, err
+	}
+	return c.nillableBulkString(resp)
 }
 
 func (c *Client) LPush(key, value string, values ...string) (int, error) {
