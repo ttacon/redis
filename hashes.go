@@ -1,6 +1,9 @@
 package redis
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+)
 
 func (c *Client) Hdel(key, field string, fields ...string) (int, error) {
 	resp, err := c.exec("HDEL", append([]string{key, field}, fields...)...)
@@ -43,13 +46,20 @@ func (c *Client) Hincrby(key, field string, increment int) (int64, error) {
 	return c.intResp(resp)
 }
 
-func (c *Client) Hincrbyfloat(key, field string, increment float64) error {
-	// TODO(ttacon): use strconv.FormatFloat, also return float64
-	_, err := c.exec("HINCRBYFLOAT", key, field, fmt.Sprintf("%f", increment))
+func (c *Client) Hincrbyfloat(key, field string, increment float64) (float64, error) {
+	resp, err := c.exec(
+		"HINCRBYFLOAT",
+		key,
+		field,
+		strconv.FormatFloat(increment, "f", 64))
 	if err != nil {
-		return err
+		return 0, err
 	}
-	return nil
+	val, err := c.stringResp(resp)
+	if err != nil {
+		return 0, err
+	}
+	return strconv.ParseFloat(val, 64)
 }
 
 func (c *Client) Hkeys(key string) ([]string, error) {
