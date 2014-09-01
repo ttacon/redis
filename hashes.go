@@ -23,12 +23,12 @@ func (c *Client) Hexists(key, field string) (bool, error) {
 	return c.boolResp(resp)
 }
 
-func (c *Client) Hget(key, field string) (string, error) {
+func (c *Client) Hget(key, field string) (*string, error) {
 	resp, err := c.exec("HGET", key, field)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return c.stringResp(resp)
+	return c.nillableBulkString(resp)
 }
 
 func (c *Client) Hgetall(key string) ([]string, error) {
@@ -52,7 +52,7 @@ func (c *Client) Hincrbyfloat(key, field string, increment float64) (float64, er
 		"HINCRBYFLOAT",
 		key,
 		field,
-		strconv.FormatFloat(increment, "f", -1, 64))
+		strconv.FormatFloat(increment, byte('f'), -1, 64))
 	if err != nil {
 		return 0, err
 	}
@@ -105,7 +105,7 @@ func mapToStrSlice(mp map[string]string) []string {
 	return vals
 }
 
-func (c *Client) Hset(key, field string, value interface{}) (int, error) {
+func (c *Client) Hset(key, field string, value interface{}) (int64, error) {
 	var strVal string
 	if str, ok := value.(string); ok {
 		strVal = str
@@ -125,7 +125,7 @@ func (c *Client) Hset(key, field string, value interface{}) (int, error) {
 	return c.intResp(resp)
 }
 
-func (c *Client) Hsetnx(key, field string, value interface{}) (int, error) {
+func (c *Client) Hsetnx(key, field string, value interface{}) (int64, error) {
 	var strVal string
 	if str, ok := value.(string); ok {
 		strVal = str
@@ -154,7 +154,7 @@ func (c *Client) Hvals(key string) ([]string, error) {
 }
 
 func (c *Client) Hscan(key string, cursor int64) (int64, []string, error) {
-	resp, err := c.sxec("HSCAN", key, strconv.FormatInt(cursor, 10))
+	resp, err := c.exec("HSCAN", key, strconv.FormatInt(cursor, 10))
 	if err != nil {
 		return -1, nil, err
 	}
@@ -166,5 +166,5 @@ func (c *Client) Hscan(key string, cursor int64) (int64, []string, error) {
 
 	// for now we'll assume if there was no error len(vals) >= 0
 	val, err := strconv.ParseInt(vals[0], 10, 64)
-	return vals[1:], val, err
+	return val, vals[1:], err
 }

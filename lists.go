@@ -24,12 +24,12 @@ func (c *Client) BRPop(key string, timeout int, keys ...string) ([]string, error
 	return c.stringSlice(resp)
 }
 
-func (c *Client) BRPopLPush(source, destination string, timeout int) (string, error) {
+func (c *Client) BRPopLPush(source, destination string, timeout int) (*string, error) {
 	resp, err := c.exec("BRPOPLPUSH", source, destination, strconv.Itoa(timeout))
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return c.stringResp(resp)
+	return c.nillableBulkString(resp)
 }
 
 func (c *Client) LIndex(key string, index int) (string, error) {

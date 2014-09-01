@@ -109,7 +109,8 @@ func (c *Client) nillableBulkString(data []byte) (*string, error) {
 	}
 
 	respBytes, err := c.readTillCRLF()
-	return &string(respBytes), err
+	val := string(respBytes)
+	return &val, err
 }
 
 func (c *Client) bulkString(data []byte) (string, error) {
