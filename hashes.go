@@ -125,9 +125,24 @@ func (c *Client) Hset(key, field string, value interface{}) (int, error) {
 	return c.intResp(resp)
 }
 
-func (c *Client) HsetNx(key, field string, value interface{}) error {
-	// TODO(ttacon): ✔
-	return nil
+func (c *Client) Hsetnx(key, field string, value interface{}) (int, error) {
+	var strVal string
+	if str, ok := value.(string); ok {
+		strVal = str
+	} else if i, ok := value.(int); ok {
+		strVal = strconv.FormatInt(int64(i), 64)
+	} else {
+		return -1, errors.New(
+			fmt.Sprintf(
+				"HSET only takes int or string as it's value, was given: %v",
+				value))
+	}
+
+	resp, err := c.exec("HSETNX", field, strVal)
+	if err != nil {
+		return -1, err
+	}
+	return c.intResp(resp)
 }
 
 func (c *Client) Hvals(key string) ([]string, error) {
@@ -139,7 +154,18 @@ func (c *Client) Hvals(key string) ([]string, error) {
 }
 
 // TODO(ttacon): set correct function signature
-func (c *Client) Hscan(key string) error {
-	// TODO(ttacon): ✔
-	return nil
+func (c *Client) Hscan(key string, cursor int64) (int64, []string, error) {
+	resp, err := c.sxec("HSCAN", key, strconv.FormatInt(cursor, 10))
+	if err != nil {
+		return -1, nil, err
+	}
+
+	vals, err := c.stringSlice(resp)
+	if err != nil {
+		return -1, nil, err
+	}
+
+	// for now we'll assume if there was no error len(vals) >= 0
+	val, err := strconv.ParseInt(vals[0], 10, 64)
+	return vals[1:], val, err
 }

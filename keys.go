@@ -158,8 +158,8 @@ func (c *Client) Type(key string) (string, error) {
 	return c.stringResp(resp)
 }
 
-func (c *Client) Scan(key string, cursor int) ([]string, int, error) {
-	resp, err := c.exec("SCAN", strconv.Itoa(cursor))
+func (c *Client) Scan(key string, cursor int64) ([]string, int64, error) {
+	resp, err := c.exec("SCAN", strconv.FormatInt(cursor, 10))
 	if err != nil {
 		return nil, 0, err
 	}
@@ -170,7 +170,6 @@ func (c *Client) Scan(key string, cursor int) ([]string, int, error) {
 		return nil, 0, err
 	}
 
-	// TODO(ttacon): this should probably be 64, shouldn't it?
-	val, err := strconv.ParseInt(vals[0], 10, 32)
-	return vals[1:], int(val), err
+	val, err := strconv.ParseInt(vals[0], 10, 64)
+	return vals[1:], val, err
 }
