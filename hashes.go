@@ -1,6 +1,7 @@
 package redis
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 )
@@ -88,10 +89,7 @@ func (c *Client) Hmget(key, field string, fields ...string) ([]string, error) {
 
 func (c *Client) Hmset(key string, values map[string]string) error {
 	_, err := c.exec("HMSET", append([]string{key}, mapToStrSlice(values)...)...)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func mapToStrSlice(mp map[string]string) []string {
@@ -107,14 +105,24 @@ func mapToStrSlice(mp map[string]string) []string {
 	return vals
 }
 
-func (c *Client) Hset(key, field, value string) error {
-	// TODO(ttacon): allow int's on their own as well?
-	_, err := c.exec("HSET", field, value)
-	if err != nil {
-		return err
+func (c *Client) Hset(key, field string, value interface{}) (int, error) {
+	var strVal string
+	if str, ok := value.(string); ok {
+		strVal = str
+	} else if i, ok := value.(int); ok {
+		strVal = strconv.FormatInt(int64(i), 64)
+	} else {
+		return -1, errors.New(
+			fmt.Sprintf(
+				"HSET only takes int or string as it's value, was given: %v",
+				value))
 	}
-	// TODO(ttacon): check resp 0 vs 1
-	return nil
+
+	resp, err := c.exec("HSET", field, strVal)
+	if err != nil {
+		return -1, err
+	}
+	return c.intResp(resp)
 }
 
 func (c *Client) HsetNx(key, field string, value interface{}) error {
