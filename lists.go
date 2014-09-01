@@ -1,6 +1,10 @@
 package redis
 
-import "strconv"
+import (
+	"errors"
+	"fmt"
+	"strconv"
+)
 
 func (c *Client) BLPop(key string, timeout int, keys ...string) ([]string, error) {
 	var vals = []string{key}
@@ -50,9 +54,29 @@ const (
 func (b BeforeAfter) String() string { return string(b) }
 
 // TODO(ttacon): value is interface so can use int, float or string
-func (c *Client) LInsert(key string, insert BeforeAfter, pivot string, value interface{}) (string, error) {
-	// TODO(ttacon): ✔
-	return "", nil
+func (c *Client) LInsert(
+	key string,
+	insert BeforeAfter,
+	pivot string,
+	value interface{}) (int64, error) {
+
+	var strVal string
+	if s, ok := value.(string); ok {
+		strVal = s
+	} else if i, ok := value.(int); ok {
+		strVal = strconv.Itoa(i)
+	} else if f, ok := value.(float64); ok {
+		strVal = strconv.FormatFloat(f, byte('f'), -1, 64)
+	} else {
+		return -1, errors.New(
+			fmt.Sprintf("value must be a string, int or float64, got: %v", value))
+	}
+
+	resp, err := c.exec("LINSERT", key, insert.String(), pivot, strVal)
+	if err != nil {
+		return -1, err
+	}
+	return c.intResp(resp)
 }
 
 func (c *Client) LLen(key string) (int, error) {
