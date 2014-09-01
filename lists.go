@@ -13,9 +13,15 @@ func (c *Client) BLPop(key string, timeout int, keys ...string) ([]string, error
 	return c.stringSlice(resp)
 }
 
-func (c *Client) BRPop(key string, timeout int, keys ...string) (string, error) {
-	// TODO(ttacon): ✔
-	return "", nil
+func (c *Client) BRPop(key string, timeout int, keys ...string) ([]string, error) {
+	var vals = []string{key}
+	vals = append(vals, keys...)
+	vals = append(vals, strconv.Itoa(timeout))
+	resp, err := c.exec("BLPOP", vals...)
+	if err != nil {
+		return nil, err
+	}
+	return c.stringSlice(resp)
 }
 
 func (c *Client) BRPopLPush(source, destination string, timeout int) error {
