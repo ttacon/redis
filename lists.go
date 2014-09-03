@@ -95,7 +95,7 @@ func (c *Client) LPop(key string) (*string, error) {
 	return c.nillableBulkString(resp)
 }
 
-func (c *Client) LPush(key, value string, values ...string) (int, error) {
+func (c *Client) LPush(key, value string, values ...string) (int64, error) {
 	resp, err := c.exec("LPUSH", append([]string{key, value}, values...)...)
 	if err != nil {
 		return 0, err
@@ -111,7 +111,7 @@ func (c *Client) LRange(key string, start, stop int) ([]string, error) {
 	return c.stringSlice(resp)
 }
 
-func (c *Client) LRem(key string, count int, value string) (int, error) {
+func (c *Client) LRem(key string, count int, value string) (int64, error) {
 	resp, err := c.exec("LREM", key, strconv.Itoa(count), value)
 	if err != nil {
 		return 0, err
