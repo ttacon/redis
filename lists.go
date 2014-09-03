@@ -136,9 +136,13 @@ func (c *Client) LSet(key string, index int, value string) (bool, error) {
 	return val == "OK", err
 }
 
-func (c *Client) LTrim(key string, start, stop int) error {
-	// TODO(ttacon): ✔
-	return nil
+func (c *Client) LTrim(key string, start, stop int) (bool, error) {
+	resp, err := c.exec("LTRIM", key, strconv.Itoa(start), strconv.Itoa(stop))
+	if err != nil {
+		return false, err
+	}
+	val, err := c.stringResp(resp)
+	return val == "OK", err
 }
 
 func (c *Client) RPop(key string) (string, error) {
