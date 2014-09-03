@@ -1,8 +1,11 @@
 package redis
 
-func (c *Client) ZAdd(key, score, member string, values ...string) (int, error) {
-	// TODO(ttacon): do it
-	return 0, nil
+func (c *Client) ZAdd(key, score, member string, values ...string) (int64, error) {
+	resp, err := c.exec("ZADD", append([]string{key, score, member}, values...)...)
+	if err != nil {
+		return 0, err
+	}
+	return c.intResp(resp)
 }
 
 func (c *Client) ZCard(key string) (int64, error) {
