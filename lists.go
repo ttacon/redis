@@ -119,9 +119,13 @@ func (c *Client) LRem(key string, count int, value string) (int, error) {
 	return c.intResp(resp)
 }
 
-func (c *Client) LSet(key string, index int, value string) error {
-	// TODO(ttacon): ✔
-	return nil
+func (c *Client) LSet(key string, index int, value string) (bool, error) {
+	resp, err := c.exec("LSET", key, strconv.Itoa(index), value)
+	if err != nil {
+		return false, err
+	}
+	val, err := c.stringResp(resp)
+	return val == "OK", err
 }
 
 func (c *Client) LTrim(key string, start, stop int) error {
