@@ -112,8 +112,11 @@ func (c *Client) LRange(key string, start, stop int) ([]string, error) {
 }
 
 func (c *Client) LRem(key string, count int, value string) (int, error) {
-	// TODO(ttacon): ✔
-	return 0, nil
+	resp, err := c.exec("LREM", key, strconv.Itoa(count), value)
+	if err != nil {
+		return 0, err
+	}
+	return c.intResp(resp)
 }
 
 func (c *Client) LSet(key string, index int, value string) error {
