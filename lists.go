@@ -104,8 +104,11 @@ func (c *Client) LPush(key, value string, values ...string) (int, error) {
 }
 
 func (c *Client) LRange(key string, start, stop int) ([]string, error) {
-	// TODO(ttacon): ✔
-	return nil, nil
+	resp, err := c.exec("LRANGE", key, strconv.Itoa(start), strconv.Itoa(stop))
+	if err != nil {
+		return nil, err
+	}
+	return c.stringSlice(resp)
 }
 
 func (c *Client) LRem(key string, count int, value string) (int, error) {
