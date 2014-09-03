@@ -161,9 +161,12 @@ func (c *Client) RPopLPush(source, destination string) (string, error) {
 	return c.bulkString(resp)
 }
 
-func (c *Client) RPush(key, value string, values ...string) (int, error) {
-	// TODO(ttacon): ✔
-	return 0, nil
+func (c *Client) RPush(key, value string, values ...string) (int64, error) {
+	resp, err := c.exec("LPUSH", append([]string{key, value}, values...)...)
+	if err != nil {
+		return 0, err
+	}
+	return c.intResp(resp)
 }
 
 func (c *Client) RPushX(key, value string, values ...string) (int, error) {
