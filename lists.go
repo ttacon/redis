@@ -103,6 +103,14 @@ func (c *Client) LPush(key, value string, values ...string) (int64, error) {
 	return c.intResp(resp)
 }
 
+func (c *Client) LPushx(key, value string) (int64, error) {
+	resp, err := c.exec("LPUSHX", key, value)
+	if err != nil {
+		return 0, err
+	}
+	return c.intResp(resp)
+}
+
 func (c *Client) LRange(key string, start, stop int) ([]string, error) {
 	resp, err := c.exec("LRANGE", key, strconv.Itoa(start), strconv.Itoa(stop))
 	if err != nil {
