@@ -96,8 +96,11 @@ func (c *Client) LPop(key string) (*string, error) {
 }
 
 func (c *Client) LPush(key, value string, values ...string) (int, error) {
-	// TODO(ttacon): ✔
-	return 0, nil
+	resp, err := c.exec("LPUSH", append([]string{key, value}, values...)...)
+	if err != nil {
+		return 0, err
+	}
+	return c.intResp(resp)
 }
 
 func (c *Client) LRange(key string, start, stop int) ([]string, error) {
