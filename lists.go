@@ -145,9 +145,12 @@ func (c *Client) LTrim(key string, start, stop int) (bool, error) {
 	return val == "OK", err
 }
 
-func (c *Client) RPop(key string) (string, error) {
-	// TODO(ttacon): ✔
-	return "", nil
+func (c *Client) RPop(key string) (*string, error) {
+	resp, err := c.exec("RPOP", key)
+	if err != nil {
+		return nil, err
+	}
+	return c.nillableBulkString(resp)
 }
 
 func (c *Client) RPopLPush(source, destination string) error {
