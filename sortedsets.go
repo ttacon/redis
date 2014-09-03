@@ -25,8 +25,11 @@ func (c *Client) ZCount(key, min, max string) (int64, error) {
 }
 
 func (c *Client) ZIncryBy(key, increment, member string) (string, error) {
-	// TODO(ttacon): do it
-	return "", nil
+	resp, err := c.exec("ZINCRBY", key, increment, member)
+	if err != nil {
+		return "", err
+	}
+	return c.bulkString(resp)
 }
 
 // TODO(ttacon): put in correct/intuitive function signature
