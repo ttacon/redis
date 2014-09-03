@@ -153,9 +153,12 @@ func (c *Client) RPop(key string) (*string, error) {
 	return c.nillableBulkString(resp)
 }
 
-func (c *Client) RPopLPush(source, destination string) error {
-	// TODO(ttacon): ✔
-	return nil
+func (c *Client) RPopLPush(source, destination string) (string, error) {
+	resp, err := c.exec("RPOPLPUSH", source, destination)
+	if err != nil {
+		return "", err
+	}
+	return c.bulkString(resp)
 }
 
 func (c *Client) RPush(key, value string, values ...string) (int, error) {
